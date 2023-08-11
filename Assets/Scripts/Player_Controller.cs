@@ -13,7 +13,7 @@ public class Player_Controller : MonoBehaviour
 
     private Vector2 position;
 
-
+    private int score = 0;
     private void Awake()
     {
         position = new Vector2(0, 0);
@@ -82,4 +82,23 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
+    public void IncreaseScore(int _score)
+    {
+        score+=_score;
+        Debug.Log("Score:" + score);
+    }
+
+    public void DecreaseScore(int _score)
+    {  
+        if(score > 0)
+        {
+            score -= _score;
+            Debug.Log("Score:" + score);
+        }
+        else
+        {
+            score = 0;
+        }
+        
+    }
 }
