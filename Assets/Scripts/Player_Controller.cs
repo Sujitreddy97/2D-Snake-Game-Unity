@@ -7,26 +7,52 @@ public class Player_Controller : MonoBehaviour
 
     private float moveTimer = 0;
 
-    [SerializeField] private float moveTimerMax = 0;
+    [SerializeField] private float moveTimerMax;
+
+    [SerializeField] private List<Transform> segments;
+
+    [SerializeField] private Transform segmentsPrefab;
+
+    [SerializeField] private float gap;
+
+    [SerializeField] private BoxCollider2D gridArea;
 
     private Vector2 direction;
-
     private Vector2 position;
-
+    private int startSize = 3;
     private int score = 0;
+
+
+
     private void Awake()
     {
         position = new Vector2(0, 0);
         moveTimer = moveTimerMax;
-        direction = new Vector2(0, 1);
+        direction = new Vector2(0, 2);
     }
+
+    private void Start()
+    {
+        segments = new List<Transform>();
+        segments.Add(this.transform);
+
+        for (int i = 1; i <= startSize; i++)
+        {
+            AddSegments();
+        }
+    }
+
 
     void Update()
     {
         playerInput();
-        handleGridMovement();
+
     }
 
+    private void FixedUpdate()
+    {
+        handleGridMovement();
+    }
 
     private void playerInput()
     {
@@ -77,28 +103,76 @@ public class Player_Controller : MonoBehaviour
         if (moveTimer >= moveTimerMax)
         {
             position += direction;
+            ScreenWrap(ref position);
             moveTimer -= moveTimerMax;
             transform.position = new Vector3(position.x, position.y, 0);
+            UpdateSegments();
         }
     }
 
     public void IncreaseScore(int _score)
     {
-        score+=_score;
+        AddSegments();
+        score += _score;
         Debug.Log("Score:" + score);
     }
 
     public void DecreaseScore(int _score)
-    {  
-        if(score > 0)
+    {
+        if (score > 0)
         {
-            score -= _score;
-            Debug.Log("Score:" + score);
+            if (segments.Count > 3)
+            {
+                Transform lastSegments = segments[segments.Count - 1];
+                segments.Remove(lastSegments);
+                Destroy(lastSegments.gameObject);
+                score -= _score;
+                Debug.Log("Score:" + score);
+            }
+
         }
         else
         {
             score = 0;
         }
-        
+
     }
+
+    private void UpdateSegments()
+    {
+        for (int i = segments.Count - 1; i > 0; i--)
+        {
+            segments[i].position = segments[i - 1].position;
+        }
+        segments[0].position = transform.position;
+    }
+
+    private void AddSegments()
+    {
+        Transform segment = Instantiate(segmentsPrefab);
+        segment.position = this.transform.position;
+        segments.Add(segment);
+    }
+
+    private void ScreenWrap(ref Vector2 position)
+    {
+        if (position.x < gridArea.bounds.min.x)
+        {
+            position.x = gridArea.bounds.max.x;
+        }
+        else if (position.x > gridArea.bounds.max.x)
+        {
+            position.x = gridArea.bounds.min.x;
+        }
+        else if (position.y < gridArea.bounds.min.y)
+        {
+            position.y = gridArea.bounds.max.y;
+        }
+        else if(position.y > gridArea.bounds.max.y)
+        {
+            position.y = gridArea.bounds.min.y;
+        }
+    }
+
+
 }
