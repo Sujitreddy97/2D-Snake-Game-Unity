@@ -1,12 +1,12 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Food_Spwan : MonoBehaviour
 {
     [SerializeField] private GameObject massGainer;
     [SerializeField] private GameObject massBurner;
     [SerializeField] private BoxCollider2D GridArea;
-    [SerializeField] private float spawnInterwal;
-    [SerializeField] private float foodLifeTime;
+    List<Food_Controller> foods;
 
     public static Food_Spwan instance;
 

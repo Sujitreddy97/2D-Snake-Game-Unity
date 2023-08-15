@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class Food_Controller : MonoBehaviour
 {
-    [SerializeField] private Food_Type foodType;
+    [SerializeField] private Collectable_Type foodType;
     private Coroutine changePositionCoroutine;
+    
+
     private void Start()
     {
-        changePositionCoroutine = StartCoroutine(ChangePosition());
+        InvokeRepeating(nameof(ChangeFoodPosition), 10f, 10f);
     }
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Player_Controller playerController = collision.gameObject.GetComponent<Player_Controller>();
@@ -18,11 +22,11 @@ public class Food_Controller : MonoBehaviour
 
             switch (foodType)
             {
-                case Food_Type.MassGainer:
+                case Collectable_Type.MassGainer:
                     Debug.Log("Mass Gainer");
                     playerController.IncreaseScore(5);
                     break;
-                case Food_Type.MassBurner:
+                case Collectable_Type.MassBurner:
                     Debug.Log("Mass Burner");
                     playerController.DecreaseScore(2);
                     break;
@@ -30,21 +34,15 @@ public class Food_Controller : MonoBehaviour
 
         }
 
-        StopCoroutine(changePositionCoroutine);
+        this.CancelInvoke();
         ChangeFoodPosition();
     }
 
-    IEnumerator ChangePosition()
-    {
-        yield return new WaitForSeconds(10f);
-        ChangeFoodPosition();
-        
-    }
 
     void ChangeFoodPosition()
     {
         gameObject.transform.position = Food_Spwan.instance.RandomPosition();
-        changePositionCoroutine = StartCoroutine(ChangePosition());
+        InvokeRepeating(nameof(ChangeFoodPosition), 10f, 10f);
     }
 
 }

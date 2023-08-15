@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player_Controller : MonoBehaviour
 {
 
-    private float moveTimer = 0;
+    private float moveTimer;
 
     [SerializeField] private float moveTimerMax;
 
@@ -13,16 +13,24 @@ public class Player_Controller : MonoBehaviour
 
     [SerializeField] private Transform segmentsPrefab;
 
-    [SerializeField] private float gap;
-
     [SerializeField] private BoxCollider2D gridArea;
+
+    [SerializeField] private Transform spwanPos;
 
     private Vector2 direction;
     private Vector2 position;
     private int startSize = 3;
     private int score = 0;
 
+    private bool isSpeedUp;
+    private float originalSpeed;
+    private Coroutine SpeedUpCo;
 
+    private bool isScoreBoost;
+    private Coroutine ScoreBoostCo;
+
+    private bool isShieldActive;
+    private Coroutine ShieldCo;
 
     private void Awake()
     {
@@ -34,12 +42,14 @@ public class Player_Controller : MonoBehaviour
     private void Start()
     {
         segments = new List<Transform>();
-        segments.Add(this.transform);
+        segments.Add(spwanPos);
 
         for (int i = 1; i <= startSize; i++)
         {
             AddSegments();
         }
+        isSpeedUp = false;
+        originalSpeed = moveTimerMax;
     }
 
 
@@ -100,6 +110,15 @@ public class Player_Controller : MonoBehaviour
     {
         moveTimer += Time.deltaTime;
 
+        if (isSpeedUp)
+        {
+            moveTimerMax = 0.1f;
+        }
+        else if (!isSpeedUp)
+        {
+            moveTimerMax = originalSpeed;
+        }
+
         if (moveTimer >= moveTimerMax)
         {
             position += direction;
@@ -112,9 +131,16 @@ public class Player_Controller : MonoBehaviour
 
     public void IncreaseScore(int _score)
     {
-        AddSegments();
-        score += _score;
+       if(isScoreBoost)
+        {
+            score += (_score * 2);
+        }
+       else
+        {
+            score += _score;
+        }
         Debug.Log("Score:" + score);
+        AddSegments();
     }
 
     public void DecreaseScore(int _score)
@@ -140,18 +166,39 @@ public class Player_Controller : MonoBehaviour
 
     private void UpdateSegments()
     {
-        for (int i = segments.Count - 1; i > 0; i--)
+        /*for (int i = segments.Count - 1; i > 0; i--)
         {
             segments[i].position = segments[i - 1].position;
         }
-        segments[0].position = transform.position;
+        segments[0].position = transform.position;*/
+        for (int i = segments.Count - 1; i > 0; i--)
+        {
+            // If the segment is not the head, then set its position to the position of the previous segment.
+            if (i != 0)
+            {
+                segments[i].position = segments[i - 1].position;
+            }
+        }
     }
 
     private void AddSegments()
     {
-        Transform segment = Instantiate(segmentsPrefab);
-        segment.position = this.transform.position;
-        segments.Add(segment);
+        /*Transform segment = Instantiate(segmentsPrefab);
+        segment.position = spwanPos.position;
+        segments.Add(segment);*/
+        //If the list of segments is empty, then spawn a new segment at the `spwanPos` position.
+        if (segments == null || segments.Count == 0)
+        {
+            Transform segment = Instantiate(segmentsPrefab, spwanPos.position, spwanPos.rotation);
+            segments.Add(segment);
+        }
+        else
+        {
+            // Otherwise, spawn a new segment at the position of the last segment in the list.
+            Transform segment = Instantiate(segmentsPrefab, segments[segments.Count - 1].position, segments[segments.Count - 1].rotation);
+            segments.Add(segment);
+        }
+
     }
 
     private void ScreenWrap(ref Vector2 position)
@@ -168,11 +215,62 @@ public class Player_Controller : MonoBehaviour
         {
             position.y = gridArea.bounds.max.y;
         }
-        else if(position.y > gridArea.bounds.max.y)
+        else if (position.y > gridArea.bounds.max.y)
         {
             position.y = gridArea.bounds.min.y;
         }
     }
 
+    public void ShieldCouroutine()
+    {
+        ShieldCo = StartCoroutine(Shield());    
+    }
+
+    private IEnumerator Shield()
+    {
+        isShieldActive = true;
+        Debug.Log("Shield Activated");
+        yield return new WaitForSeconds(5f);
+        Debug.Log("Shield Deactivated");
+        isShieldActive = false;
+    }
+
+    public void ScoreBoostCoroutine()
+    {
+        ScoreBoostCo = StartCoroutine(ScoreBoost());
+    }
+
+    private IEnumerator ScoreBoost()
+    {
+        isScoreBoost = true;
+        Debug.Log("Double Score Activated");
+        yield return new WaitForSeconds(8f);
+        Debug.Log("Double Score Deactivated");
+        isScoreBoost = false;
+    }
+
+    public void SpeedUpCoroutine()
+    {
+        SpeedUpCo = StartCoroutine(SpeedUp()); 
+    }
+
+    private IEnumerator SpeedUp()
+    {
+        isSpeedUp = true;
+        Debug.Log("Changing Speed");
+        yield return new WaitForSeconds(5f);
+        Debug.Log("Original speed");
+        isSpeedUp = false;
+    }
+
+    private void OnDisable()
+    {
+        if (SpeedUpCo != null)
+            StopCoroutine(SpeedUpCo);
+        if (ScoreBoostCo != null)
+            StopCoroutine(ScoreBoostCo);
+        if (ShieldCo != null)
+            StopCoroutine(ShieldCo);
+    }
 
 }

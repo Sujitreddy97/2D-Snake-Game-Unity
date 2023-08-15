@@ -262,6 +262,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 523678417}
   - {fileID: 2076496121}
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -350,6 +351,55 @@ Transform:
   m_Father: {fileID: 1877331033}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &523678416
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 523678417}
+  - component: {fileID: 523678418}
+  m_Layer: 0
+  m_Name: PowerUps_Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &523678417
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523678416}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -80.70557, y: -3.7988567, z: -1.2432593}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 220972651}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &523678418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523678416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf83a9166ce061b4697ab2448ab98a13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PowerUps:
+  - {fileID: 1450021133769047673, guid: 5c4eb7b2a336e394b9b4c668625aca04, type: 3}
+  - {fileID: 5202016640527644256, guid: ed8aca403d79ecc47a9e2eb72cb195d0, type: 3}
+  - {fileID: 1058208396374079297, guid: c293a19dacb30c54f8312aeba1bf50b5, type: 3}
+  GridArea: {fileID: 1468648317}
 --- !u!1 &973032080
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,7 +641,7 @@ GameObject:
   - component: {fileID: 1468648318}
   - component: {fileID: 1468648317}
   m_Layer: 0
-  m_Name: Boundray
+  m_Name: Grid_Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -749,6 +799,11 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!4 &1697820414 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6997933600461343315, guid: 03554771b17b2e9498e2953e5f1b9456, type: 3}
+  m_PrefabInstance: {fileID: 1798693562}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1779252694 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5662389302117806296, guid: 03554771b17b2e9498e2953e5f1b9456, type: 3}
@@ -814,8 +869,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1468648317}
     - target: {fileID: 5662389302117806299, guid: 03554771b17b2e9498e2953e5f1b9456, type: 3}
+      propertyPath: spwanPos
+      value: 
+      objectReference: {fileID: 1697820414}
+    - target: {fileID: 5662389302117806299, guid: 03554771b17b2e9498e2953e5f1b9456, type: 3}
       propertyPath: moveTimerMax
-      value: 0.3
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5662389302117806299, guid: 03554771b17b2e9498e2953e5f1b9456, type: 3}
       propertyPath: segmentPrefab
@@ -989,7 +1048,7 @@ GameObject:
   - component: {fileID: 2076496121}
   - component: {fileID: 2076496122}
   m_Layer: 0
-  m_Name: Food_Controller
+  m_Name: Food_Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1008,7 +1067,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 220972651}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2076496122
 MonoBehaviour:
@@ -1025,5 +1084,3 @@ MonoBehaviour:
   massGainer: {fileID: 1450021133769047673, guid: 3835f555e5d70a44dbca2252412bacc1, type: 3}
   massBurner: {fileID: 1058208396374079297, guid: 74ff14e88bbe54b4cb54263f5a30c9e9, type: 3}
   GridArea: {fileID: 1468648317}
-  spawnInterwal: 0
-  foodLifeTime: 0
