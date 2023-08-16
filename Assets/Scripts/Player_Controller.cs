@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Player_Controller : MonoBehaviour
 {
@@ -16,6 +17,16 @@ public class Player_Controller : MonoBehaviour
     [SerializeField] private BoxCollider2D gridArea;
 
     [SerializeField] private Transform spwanPos;
+
+    [SerializeField] private TMP_Text ScoreText;
+
+    [SerializeField] private TMP_Text ShieldText;
+
+    [SerializeField] private TMP_Text DoubleSpeedText;
+
+    [SerializeField] private TMP_Text DoubleScoreText;
+
+    [SerializeField] private GameObject GameOverPanel;
 
     private Vector2 direction;
     private Vector2 position;
@@ -36,7 +47,8 @@ public class Player_Controller : MonoBehaviour
     {
         position = new Vector2(0, 0);
         moveTimer = moveTimerMax;
-        direction = new Vector2(0, 2);
+        direction = new Vector2(0, 1);
+        GameOverPanel.SetActive(false);
     }
 
     private void Start()
@@ -131,6 +143,8 @@ public class Player_Controller : MonoBehaviour
                 if (transform.position == segments[i].position)
                 {
                     Debug.Log("Game over");
+                    GameOverPanel.SetActive(true);
+                    this.enabled = false;
                 }
             }
         }
@@ -147,6 +161,7 @@ public class Player_Controller : MonoBehaviour
             score += _score;
         }
         Debug.Log("Score:" + score);
+        ScoreText.text = "Score: " + score;
         AddSegments();
     }
 
@@ -161,6 +176,7 @@ public class Player_Controller : MonoBehaviour
                 Destroy(lastSegments.gameObject);
                 score -= _score;
                 Debug.Log("Score:" + score);
+                ScoreText.text = "Score: " + score;
             }
 
         }
@@ -237,8 +253,10 @@ public class Player_Controller : MonoBehaviour
     {
         isShieldActive = true;
         Debug.Log("Shield Activated");
+        ShieldText.color = Color.red;
         yield return new WaitForSeconds(5f);
         Debug.Log("Shield Deactivated");
+        ShieldText.color = Color.gray;
         isShieldActive = false;
     }
 
@@ -250,9 +268,11 @@ public class Player_Controller : MonoBehaviour
     private IEnumerator ScoreBoost()
     {
         isScoreBoost = true;
+        DoubleScoreText.color = Color.red;
         Debug.Log("Double Score Activated");
         yield return new WaitForSeconds(8f);
         Debug.Log("Double Score Deactivated");
+        DoubleScoreText.color = Color.grey;
         isScoreBoost = false;
     }
 
@@ -265,8 +285,10 @@ public class Player_Controller : MonoBehaviour
     {
         isSpeedUp = true;
         Debug.Log("Changing Speed");
+        DoubleSpeedText.color = Color.red;
         yield return new WaitForSeconds(5f);
         Debug.Log("Original speed");
+        DoubleSpeedText.color = Color.white;
         isSpeedUp = false;
     }
 

@@ -30,8 +30,15 @@ public class Food_Spwan : MonoBehaviour
 
     private void SpawnFood()
     {
-        Instantiate(massGainer, RandomPosition(), transform.rotation);
-        Instantiate(massBurner, RandomPosition(), transform.rotation);
+        Vector3 massGainerPosition = RandomPosition();
+        Vector3 massBurnerPosition = RandomPosition();
+
+        while(massGainerPosition == massBurnerPosition)
+        {
+            massBurnerPosition = RandomPosition();
+        }
+        Instantiate(massGainer, massGainerPosition, transform.rotation);
+        Instantiate(massBurner, massBurnerPosition, transform.rotation);
     }
 
     public Vector3 RandomPosition()
