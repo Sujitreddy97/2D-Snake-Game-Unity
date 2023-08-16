@@ -56,13 +56,9 @@ public class Player_Controller : MonoBehaviour
     void Update()
     {
         playerInput();
-
-    }
-
-    private void FixedUpdate()
-    {
         handleGridMovement();
     }
+
 
     private void playerInput()
     {
@@ -127,15 +123,26 @@ public class Player_Controller : MonoBehaviour
             transform.position = new Vector3(position.x, position.y, 0);
             UpdateSegments();
         }
+
+        if (!isShieldActive)
+        {
+            for (int i = 0; i < segments.Count; i++)
+            {
+                if (transform.position == segments[i].position)
+                {
+                    Debug.Log("Game over");
+                }
+            }
+        }
     }
 
     public void IncreaseScore(int _score)
     {
-       if(isScoreBoost)
+        if (isScoreBoost)
         {
             score += (_score * 2);
         }
-       else
+        else
         {
             score += _score;
         }
@@ -223,7 +230,7 @@ public class Player_Controller : MonoBehaviour
 
     public void ShieldCouroutine()
     {
-        ShieldCo = StartCoroutine(Shield());    
+        ShieldCo = StartCoroutine(Shield());
     }
 
     private IEnumerator Shield()
@@ -251,7 +258,7 @@ public class Player_Controller : MonoBehaviour
 
     public void SpeedUpCoroutine()
     {
-        SpeedUpCo = StartCoroutine(SpeedUp()); 
+        SpeedUpCo = StartCoroutine(SpeedUp());
     }
 
     private IEnumerator SpeedUp()

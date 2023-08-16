@@ -15,6 +15,7 @@ public class Powerup_Controller : MonoBehaviour
             {
                 case Collectable_Type.Shield:
                     Debug.Log("Shield Activated");
+                    player_Controller.ShieldCouroutine();
                     break;
 
                 case Collectable_Type.ScoreBoost:
