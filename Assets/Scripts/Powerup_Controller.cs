@@ -32,6 +32,7 @@ public class Powerup_Controller : MonoBehaviour
 
         CancelInvoke(nameof(Powerup_Spwan.instance.Spawn));
         Destroy(gameObject);
+        Audio_Manager.instance.Play(SoundName.PowerUps);
     }
 }
 

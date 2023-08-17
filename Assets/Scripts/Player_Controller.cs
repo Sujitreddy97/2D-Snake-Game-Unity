@@ -28,6 +28,8 @@ public class Player_Controller : MonoBehaviour
 
     [SerializeField] private GameObject GameOverPanel;
 
+    [SerializeField] private Pause_Game_Controller PauseGame;
+
     private Vector2 direction;
     private Vector2 position;
     private int startSize = 3;
@@ -42,6 +44,7 @@ public class Player_Controller : MonoBehaviour
 
     private bool isShieldActive;
     private Coroutine ShieldCo;
+    private bool isPaused;
 
     private void Awake()
     {
@@ -49,6 +52,7 @@ public class Player_Controller : MonoBehaviour
         moveTimer = moveTimerMax;
         direction = new Vector2(0, 1);
         GameOverPanel.SetActive(false);
+        isPaused = false;
     }
 
     private void Start()
@@ -111,6 +115,7 @@ public class Player_Controller : MonoBehaviour
             }
 
         }
+        PauseGameUI();
 
     }
 
@@ -144,10 +149,30 @@ public class Player_Controller : MonoBehaviour
                 {
                     Debug.Log("Game over");
                     GameOverPanel.SetActive(true);
+                    Audio_Manager.instance.Play(SoundName.GameOver);
                     this.enabled = false;
+
                 }
             }
         }
+    }
+
+    private void PauseGameUI()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!isPaused)
+            {
+                PauseGame.PauseGame();
+                isPaused = true;
+            }
+            else if (isPaused)
+            {
+                PauseGame.ResumeGame();
+                isPaused = false;
+            }
+        }
+
     }
 
     public void IncreaseScore(int _score)
@@ -163,6 +188,7 @@ public class Player_Controller : MonoBehaviour
         Debug.Log("Score:" + score);
         ScoreText.text = "Score: " + score;
         AddSegments();
+        Audio_Manager.instance.Play(SoundName.FoodGainer);
     }
 
     public void DecreaseScore(int _score)
@@ -177,6 +203,7 @@ public class Player_Controller : MonoBehaviour
                 score -= _score;
                 Debug.Log("Score:" + score);
                 ScoreText.text = "Score: " + score;
+                Audio_Manager.instance.Play(SoundName.FoodBurner);
             }
 
         }
@@ -206,10 +233,7 @@ public class Player_Controller : MonoBehaviour
 
     private void AddSegments()
     {
-        /*Transform segment = Instantiate(segmentsPrefab);
-        segment.position = spwanPos.position;
-        segments.Add(segment);*/
-        //If the list of segments is empty, then spawn a new segment at the `spwanPos` position.
+       
         if (segments == null || segments.Count == 0)
         {
             Transform segment = Instantiate(segmentsPrefab, spwanPos.position, spwanPos.rotation);
@@ -217,7 +241,6 @@ public class Player_Controller : MonoBehaviour
         }
         else
         {
-            // Otherwise, spawn a new segment at the position of the last segment in the list.
             Transform segment = Instantiate(segmentsPrefab, segments[segments.Count - 1].position, segments[segments.Count - 1].rotation);
             segments.Add(segment);
         }
