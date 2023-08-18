@@ -3,9 +3,14 @@ using UnityEngine.SceneManagement;
 
 public class Lobby_Manager : MonoBehaviour
 {
-    public void PlayGame()
+    public void SinglePlayerGame()
     {
         SceneManager.LoadScene(1);
+        Audio_Manager.instance.Play(SoundName.ButtonClick);
+    }
+    public void TwoPlayerGame()
+    {
+        SceneManager.LoadScene(2);
         Audio_Manager.instance.Play(SoundName.ButtonClick);
     }
     public void OptionsMenu()

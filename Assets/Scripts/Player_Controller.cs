@@ -20,11 +20,19 @@ public class Player_Controller : MonoBehaviour
 
     [SerializeField] private TMP_Text ScoreText;
 
+    [SerializeField] private TMP_Text ScoreText2;
+
     [SerializeField] private TMP_Text ShieldText;
+
+    [SerializeField] private TMP_Text ShieldText2;
 
     [SerializeField] private TMP_Text DoubleSpeedText;
 
+    [SerializeField] private TMP_Text DoubleSpeedText2;
+
     [SerializeField] private TMP_Text DoubleScoreText;
+
+    [SerializeField] private TMP_Text DoubleScoreText2;
 
     [SerializeField] private GameObject GameOverPanel;
 
@@ -46,9 +54,28 @@ public class Player_Controller : MonoBehaviour
     private Coroutine ShieldCo;
     private bool isPaused;
 
+    private bool isPlayerOne = false;
+    private bool isPlayerTwo = false;
+
     private void Awake()
     {
-        position = new Vector2(0, 0);
+        if (this.gameObject.CompareTag("Player1"))
+        {
+            isPlayerOne = true;
+        }
+        if (this.gameObject.CompareTag("Player2"))
+        {
+            isPlayerTwo = true;
+        }
+        if(isPlayerOne)
+        {
+            position = new Vector2(-2, 0);
+        }
+        else if (isPlayerTwo)
+        {
+            position = new Vector2(2, 0);
+        }
+        
         moveTimer = moveTimerMax;
         direction = new Vector2(0, 1);
         GameOverPanel.SetActive(false);
@@ -78,42 +105,86 @@ public class Player_Controller : MonoBehaviour
 
     private void playerInput()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (isPlayerOne == true)
         {
-            if (direction != Vector2.down.normalized)
+            if (Input.GetKeyDown(KeyCode.W))
             {
-                direction = Vector2.up.normalized;
-                transform.rotation = Quaternion.Euler(Vector3.zero);
-                //Debug.Log(direction);
+                if (direction != Vector2.down.normalized)
+                {
+                    direction = Vector2.up.normalized;
+                    transform.rotation = Quaternion.Euler(Vector3.zero);
+                    //Debug.Log(direction);
+                }
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (direction != Vector2.up.normalized)
+            else if (Input.GetKeyDown(KeyCode.S))
             {
-                direction = Vector2.down;
-                transform.rotation = Quaternion.Euler(0, 0, 180);
-                //Debug.Log(direction);
+                if (direction != Vector2.up.normalized)
+                {
+                    direction = Vector2.down;
+                    transform.rotation = Quaternion.Euler(0, 0, 180);
+                    //Debug.Log(direction);
+                }
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            if (direction != Vector2.right.normalized)
+            else if (Input.GetKeyDown(KeyCode.A))
             {
-                direction = Vector2.left.normalized;
-                transform.rotation = Quaternion.Euler(0, 0, 90);
-                //Debug.Log(direction);
+                if (direction != Vector2.right.normalized)
+                {
+                    direction = Vector2.left.normalized;
+                    transform.rotation = Quaternion.Euler(0, 0, 90);
+                    //Debug.Log(direction);
+                }
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            if (direction != Vector2.left.normalized)
+            else if (Input.GetKeyDown(KeyCode.D))
             {
-                direction = Vector2.right.normalized;
-                transform.rotation = Quaternion.Euler(0, 0, -90);
-                //Debug.Log(direction);
-            }
+                if (direction != Vector2.left.normalized)
+                {
+                    direction = Vector2.right.normalized;
+                    transform.rotation = Quaternion.Euler(0, 0, -90);
+                    //Debug.Log(direction);
+                }
 
+            }
+            
+        }
+        if (isPlayerTwo == true)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (direction != Vector2.down.normalized)
+                {
+                    direction = Vector2.up.normalized;
+                    transform.rotation = Quaternion.Euler(Vector3.zero);
+                    //Debug.Log(direction);
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                if (direction != Vector2.up.normalized)
+                {
+                    direction = Vector2.down;
+                    transform.rotation = Quaternion.Euler(0, 0, 180);
+                    //Debug.Log(direction);
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                if (direction != Vector2.right.normalized)
+                {
+                    direction = Vector2.left.normalized;
+                    transform.rotation = Quaternion.Euler(0, 0, 90);
+                    //Debug.Log(direction);
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                if (direction != Vector2.left.normalized)
+                {
+                    direction = Vector2.right.normalized;
+                    transform.rotation = Quaternion.Euler(0, 0, -90);
+                    //Debug.Log(direction);
+                }
+
+            }
         }
         PauseGameUI();
 
@@ -141,6 +212,11 @@ public class Player_Controller : MonoBehaviour
             UpdateSegments();
         }
 
+        GameOver();
+    }
+
+    private void GameOver()
+    {
         if (!isShieldActive)
         {
             for (int i = 0; i < segments.Count; i++)
@@ -151,7 +227,6 @@ public class Player_Controller : MonoBehaviour
                     GameOverPanel.SetActive(true);
                     Audio_Manager.instance.Play(SoundName.GameOver);
                     this.enabled = false;
-
                 }
             }
         }
@@ -186,7 +261,15 @@ public class Player_Controller : MonoBehaviour
             score += _score;
         }
         Debug.Log("Score:" + score);
-        ScoreText.text = "Score: " + score;
+        if(isPlayerOne == true)
+        {
+            ScoreText.text = "Score: " + score;
+        }
+        else if(isPlayerTwo == true)
+        {
+            ScoreText2.text = "Score: " + score;
+        }
+        
         AddSegments();
         Audio_Manager.instance.Play(SoundName.FoodGainer);
     }
@@ -202,7 +285,15 @@ public class Player_Controller : MonoBehaviour
                 Destroy(lastSegments.gameObject);
                 score -= _score;
                 Debug.Log("Score:" + score);
-                ScoreText.text = "Score: " + score;
+                if(isPlayerOne == true)
+                {
+                    ScoreText.text = "Score: " + score;
+                }
+                else if(isPlayerTwo == true)
+                {
+                    ScoreText2.text = "Score: " + score;
+                }
+                
                 Audio_Manager.instance.Play(SoundName.FoodBurner);
             }
 
@@ -233,7 +324,7 @@ public class Player_Controller : MonoBehaviour
 
     private void AddSegments()
     {
-       
+
         if (segments == null || segments.Count == 0)
         {
             Transform segment = Instantiate(segmentsPrefab, spwanPos.position, spwanPos.rotation);
@@ -276,10 +367,26 @@ public class Player_Controller : MonoBehaviour
     {
         isShieldActive = true;
         Debug.Log("Shield Activated");
-        ShieldText.color = Color.red;
+        if(isPlayerOne == true)
+        {
+            ShieldText.color = Color.green;
+        }
+        else if(isPlayerTwo == true)
+        {
+            ShieldText2.color = Color.red;
+        }
+        
         yield return new WaitForSeconds(5f);
+        
+        if(isPlayerOne == true)
+        {
+            ShieldText.color = Color.white;
+        }
+        else if(isPlayerTwo)
+        {
+            ShieldText2.color = Color.white;
+        }
         Debug.Log("Shield Deactivated");
-        ShieldText.color = Color.gray;
         isShieldActive = false;
     }
 
@@ -291,11 +398,26 @@ public class Player_Controller : MonoBehaviour
     private IEnumerator ScoreBoost()
     {
         isScoreBoost = true;
-        DoubleScoreText.color = Color.red;
+        if(isPlayerOne)
+        {
+            DoubleScoreText.color = Color.green;
+        }
+        else if(isPlayerTwo)
+        {
+            DoubleScoreText2.color = Color.green;
+        }
+        
         Debug.Log("Double Score Activated");
         yield return new WaitForSeconds(8f);
         Debug.Log("Double Score Deactivated");
-        DoubleScoreText.color = Color.grey;
+        if(isPlayerOne)
+        {
+            DoubleScoreText.color = Color.white;
+        }
+        else if(isPlayerTwo)
+        {
+            DoubleScoreText2.color = Color.white;
+        }
         isScoreBoost = false;
     }
 
@@ -308,10 +430,26 @@ public class Player_Controller : MonoBehaviour
     {
         isSpeedUp = true;
         Debug.Log("Changing Speed");
-        DoubleSpeedText.color = Color.red;
+        if(isPlayerOne)
+        {
+            DoubleSpeedText.color = Color.green;
+        }
+        else if(isPlayerTwo)
+        {
+            DoubleSpeedText2.color = Color.red;
+        }
+        
         yield return new WaitForSeconds(5f);
         Debug.Log("Original speed");
-        DoubleSpeedText.color = Color.white;
+        if(isPlayerOne)
+        {
+            DoubleSpeedText.color = Color.white;
+        }
+        else if(isPlayerTwo)
+        {
+            DoubleSpeedText2.color = Color.white;
+        }
+        
         isSpeedUp = false;
     }
 
